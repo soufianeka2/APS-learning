@@ -1,8 +1,9 @@
-import { Sphere } from './viewer-customizing/geometry/spher.js';
+import { Sphere } from './viewer-customizing/geometry/Spher.js';
 import { dismountCustomGeometries, mountCustomGeometries } from './viewer-customizing/mounting.js';
-import {  Scene } from './viewer-customizing/scenes.js';
+import {  Scene } from './viewer-customizing/Scenes.js';
 import { loadCustomExtensions } from './viewer-ext/load.js';
 import { registerCustomExtensions } from './viewer-ext/register.js';
+import { userFunction } from './viewer-querying/PropertyDB.js';
 import { initViewer, loadModel } from './viewer.js';
 
 var customGeometries = [];
@@ -26,6 +27,20 @@ initViewer(document.getElementById('preview')).then(viewer => {
     });
     document.getElementById('destroy-custom-geometries').addEventListener('click', function(e) {
         unloadCustomGeometries();
+    });
+    document.getElementById('query-property-db').addEventListener('click', function (e) {
+        let searchedProperty = document.getElementById('name-property-db').value;
+        let thePromise = viewer.model.getPropertyDb().executeUserFunction(userFunction, searchedProperty);
+        thePromise.then(function (retValue) {
+            if (!retValue) {
+                console.log(`Model doesn't contain property '${searchedProperty}'.`);
+                return;
+            }
+            let mostMassiveId = retValue.id;
+            viewer.select(mostMassiveId);
+            viewer.fitToView([mostMassiveId]);
+            console.log('Most massive part is', mostMassiveId, 'with Mass:', retValue.mass);
+        });
     });
     setupModelSelection(viewer, urn);
     setupModelUpload(viewer);

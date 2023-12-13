@@ -1,5 +1,5 @@
-import { Sphere } from "./geometry/spher.js";
-import { Scene } from "./scenes.js";
+import { Sphere } from "./geometry/Spher.js";
+import { Scene } from "./Scenes.js";
 
 export function mountCustomGeometries(customGeometries) {
     customGeometries.forEach(customGeometry => {
